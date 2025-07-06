@@ -34,12 +34,13 @@ jobs:
         run: ls -l
 
       - name: list TestApp folder for debug
-        run: ls -l ./TestApp || echo "Folder TestApp not found"
+        run: pwd
+        run: ls -l ./TestApp/ || echo "Folder TestApp not found"
 
       - name: build and push docker image
         run: |
           IMAGE_URI=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY_NAME}:latest
-          docker build -t $IMAGE_URI ./TestApp
+          docker build -t $IMAGE_URI ./TestApp/
           docker push $IMAGE_URI
 
       - name: Install Node and dependencies
