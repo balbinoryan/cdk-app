@@ -3,7 +3,7 @@ name: automated deploy to aws
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   deploy:
