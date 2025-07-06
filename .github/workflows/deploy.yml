@@ -34,8 +34,7 @@ jobs:
         run: ls -l
 
       - name: list TestApp folder for debug
-        run: pwd
-        run: ls -l ./TestApp/ || echo "Folder TestApp not found"
+        run: pwd;ls -l ./TestApp/ || echo "Folder TestApp not found"
 
       - name: build and push docker image
         run: |
