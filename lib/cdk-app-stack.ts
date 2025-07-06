@@ -4,6 +4,7 @@ import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as ecs from 'aws-cdk-lib/aws-ecs';
 import * as ecs_patterns from 'aws-cdk-lib/aws-ecs-patterns';
 import { Platform } from 'aws-cdk-lib/aws-ecr-assets';
+import * as ecr from 'aws-cdk-lib/aws-ecr';
 import * as path from 'path';
 
 export class CdkAppStack extends cdk.Stack {
@@ -19,12 +20,16 @@ export class CdkAppStack extends cdk.Stack {
       clusterName: 'testapp-cluster'
     });
 
-    const image = ecs.ContainerImage.fromAsset(
-      path.resolve(__dirname, '../../TestApp/TestApp'),
-      {
-        platform: Platform.LINUX_AMD64,
-      } 
-    );
+//    const image = ecs.ContainerImage.fromAsset(
+//      path.resolve(__dirname, '../../TestApp/TestApp'),
+//      {
+//        platform: Platform.LINUX_AMD64,
+//      } 
+//    );
+
+    const repository = ecr.Repository.fromRepositoryName(this, 'TestAppRepo', 'testapp-repo');
+
+    const image = ecs.ContainerImage.fromEcrRepository(repository, 'latest');
 
     new ecs_patterns.ApplicationLoadBalancedFargateService(this, 'TestAppService', {
       cluster: cluster,
