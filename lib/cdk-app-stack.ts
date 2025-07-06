@@ -18,7 +18,7 @@ export class CdkAppStack extends cdk.Stack {
     });
 
     const image = ecs.ContainerImage.fromAsset(
-      path.resolve(__dirname, '../../TestApp') 
+      path.resolve(__dirname, '../../TestApp/TestApp') 
     );
 
     new ecs_patterns.ApplicationLoadBalancedFargateService(this, 'TestAppService', {
