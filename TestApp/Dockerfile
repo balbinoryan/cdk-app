@@ -9,7 +9,7 @@ COPY requirements.txt /app/
 
 RUN pip install --upgrade pip && pip install -r requirements.txt
 
-COPY testapp/ /app/
+COPY TestApp/testapp/ /app/
 
 RUN python manage.py collectstatic --noinput
 RUN python manage.py migrate
