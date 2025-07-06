@@ -30,6 +30,12 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
+      - name: list files for debug
+        run: ls -l
+
+      - name: list TestApp folder for debug
+        run: ls -l ./TestApp || echo "Folder TestApp not found"
+
       - name: build and push docker image
         run: |
           IMAGE_URI=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY_NAME}:latest
