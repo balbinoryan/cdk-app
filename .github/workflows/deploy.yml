@@ -39,7 +39,7 @@ jobs:
       - name: build and push docker image
         run: |
           IMAGE_URI=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY_NAME}:latest
-          docker build -t $IMAGE_URI ./TestApp/
+          docker build --platform linux/amd64 -t $IMAGE_URI ./TestApp/
           docker push $IMAGE_URI
 
       - name: Install Node and dependencies
