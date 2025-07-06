@@ -3,6 +3,7 @@ import { Construct } from 'constructs';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as ecs from 'aws-cdk-lib/aws-ecs';
 import * as ecs_patterns from 'aws-cdk-lib/aws-ecs-patterns';
+import { Platform } from 'aws-cdk-lib/aws-ecr-assets';
 import * as path from 'path';
 
 export class CdkAppStack extends cdk.Stack {
@@ -21,7 +22,7 @@ export class CdkAppStack extends cdk.Stack {
     const image = ecs.ContainerImage.fromAsset(
       path.resolve(__dirname, '../../TestApp/TestApp'),
       {
-        platform: ecs.Platform.LINUX_AMD64,
+        platform: Platform.LINUX_AMD64,
       } 
     );
 
