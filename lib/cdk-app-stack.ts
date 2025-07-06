@@ -15,6 +15,7 @@ export class CdkAppStack extends cdk.Stack {
 
     const cluster = new ecs.Cluster(this, 'TestAppCluster', {
       vpc: vpc,
+      clusterName: 'testapp-cluster'
     });
 
     const image = ecs.ContainerImage.fromAsset(
