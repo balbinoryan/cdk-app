@@ -1,0 +1,51 @@
+name: automated deploy to aws
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    name: build, push and deploy
+    runs-on: ubuntu-latest
+
+    env:
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+      ECR_REPOSITORY_NAME: ${{ secrets.ECR_REPOSITORY_NAME }}
+      AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+
+    steps:
+      - name: checkout source code
+        uses: actions/checkout@v4
+
+      - name: configure credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: login ecr
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: build and push docker image
+        run: |
+          IMAGE_URI=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY_NAME}:latest
+          docker build -t $IMAGE_URI .
+          docker push $IMAGE_URI
+
+      - name: Install Node and dependencies
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install CDK and project dependencies
+        run: |
+          npm install -g aws-cdk
+          npm ci
+
+      - name: CDK Deploy
+        run: |
+          cdk deploy --require-approval never
