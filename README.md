@@ -96,11 +96,13 @@ name: automated deploy to aws
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    name: build, push and deploy
+    runs-on: self-hosted
 
     env:
       AWS_REGION: ${{ secrets.AWS_REGION }}
@@ -108,26 +110,38 @@ jobs:
       AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
 
     steps:
-      - name: Checkout code
+      - name: checkout source code
         uses: actions/checkout@v4
 
-      - name: Configure AWS credentials
+      - name: configure credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Login to Amazon ECR
+      - name: login ecr
+        id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Build and push Docker image
+      - name: list files for debug
+        run: ls -l
+
+      - name: list TestApp folder for debug
+        run: pwd;ls -l ./TestApp/ || echo "Folder TestApp not found"
+
+      - name: build and push docker image
         run: |
           IMAGE_URI=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY_NAME}:latest
-          docker build --platform linux/amd64 -t $IMAGE_URI ./TestApp
+          docker build --platform linux/amd64 -t $IMAGE_URI ./TestApp/
           docker push $IMAGE_URI
 
-      - name: Install CDK and dependencies
+      - name: Install Node and dependencies
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install CDK and project dependencies
         run: |
           npm install -g aws-cdk
           npm ci
@@ -135,6 +149,7 @@ jobs:
       - name: CDK Deploy
         run: |
           cdk deploy --require-approval never
+
 ```
 
 ---
