@@ -187,16 +187,6 @@ http://cdkapp-testa-8mfew1y76qbf-531564463.us-east-1.elb.amazonaws.com/
 
 ---
 
-## Recommendations for Future Improvements
-
-- Set up health checks and HTTPS via ACM.
-- Enable auto-scaling based on CPU or request count.
-- Store secrets securely in AWS Secrets Manager or SSM.
-- Enable CloudWatch logging for containers.
-- Add environment variables through ECS task definitions.
-
----
-
 ### What principles did you apply?
 
 - **Infrastructure as Code**: Implemented using AWS CDK in TypeScript.
