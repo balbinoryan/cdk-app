@@ -30,13 +30,6 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-<<<<<<< HEAD
-      - name: list files for debug
-        run: ls -l
-
-      - name: list TestApp folder for debug
-        run: pwd;ls -l ./TestApp/ || echo "Folder TestApp not found"
-=======
       - name: ensure ECR repository exists and creates if not
         run: |
           aws ecr describe-repositories \
@@ -45,7 +38,6 @@ jobs:
           aws ecr create-repository \
             --repository-name $ECR_REPOSITORY_NAME \
             --region $AWS_REGION
->>>>>>> local-cdk
 
       - name: build and push docker image
         run: |
