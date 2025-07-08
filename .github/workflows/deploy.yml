@@ -55,6 +55,22 @@ jobs:
           npm install -g aws-cdk
           npm ci
 
+      - name: check if CDK bootstrap is required
+        id: check_bootstrap
+        run: |
+          if aws ssm get-parameter --name "/cdk-bootstrap/hnb659fds/version" > /dev/null 2>&1; then
+            echo "Bootstrap already done."
+            echo "bootstrap_required=false" >> $GITHUB_OUTPUT
+          else
+            echo "Bootstrap is required."
+            echo "bootstrap_required=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: CDK Bootstrap (only if required)
+        if: steps.check_bootstrap.outputs.bootstrap_required == 'true'
+        run: |
+          cdk bootstrap aws://$AWS_ACCOUNT_ID/$AWS_REGION
+
       - name: CDK Deploy
         run: |
           cdk deploy --require-approval never
