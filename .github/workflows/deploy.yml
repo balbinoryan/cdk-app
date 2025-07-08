@@ -30,6 +30,15 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
+      - name: ensure ECR repository exists and creates if not
+        run: |
+          aws ecr describe-repositories \
+            --repository-names $ECR_REPOSITORY_NAME \
+            --region $AWS_REGION || \
+          aws ecr create-repository \
+            --repository-name $ECR_REPOSITORY_NAME \
+            --region $AWS_REGION
+
       - name: build and push docker image
         run: |
           IMAGE_URI=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY_NAME}:latest
